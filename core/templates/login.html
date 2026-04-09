@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Login — TaskFlow{% endblock %}
+
+{% block content %}
+<section class="hero-section">
+  <div class="hero-inner" style="max-width:400px">
+
+    <h1 class="hero-title" style="font-size:2rem;">Welcome back 👋</h1>
+
+    <form method="POST">
+      {% csrf_token %}
+
+      {{ form.non_field_errors }}
+
+      <div style="display:flex;flex-direction:column;gap:1rem">
+        {{ form.username }}
+        {{ form.password }}
+
+        <button class="btn-hero-primary">Login</button>
+      </div>
+    </form>
+
+    <p style="margin-top:1rem">
+      No account? <a href="{% url 'register' %}">Register</a>
+    </p>
+
+  </div>
+</section>
+{% endblock %}

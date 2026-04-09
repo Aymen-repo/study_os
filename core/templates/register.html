@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}Register — TaskFlow{% endblock %}
+
+{% block content %}
+<div class="container-sm">
+
+  <div class="surface" style="padding:2rem">
+
+    <h1 class="page-title" style="text-align:center;margin-bottom:0.5rem">
+      Create your account 🚀
+    </h1>
+
+    <p class="page-subtitle" style="text-align:center;margin-bottom:2rem">
+      Start organizing your study life
+    </p>
+
+    <form method="POST" style="display:flex;flex-direction:column;gap:1.25rem">
+      {% csrf_token %}
+
+      <!-- GLOBAL ERRORS -->
+      {% if form.non_field_errors %}
+        <div class="form-error">
+          {{ form.non_field_errors }}
+        </div>
+      {% endif %}
+
+      <!-- USERNAME -->
+      <div class="form-group">
+        <label class="form-label">Username</label>
+        {{ form.username }}
+        {% if form.username.errors %}
+          <div class="form-error">{{ form.username.errors }}</div>
+        {% endif %}
+      </div>
+
+      <!-- PASSWORD -->
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        {{ form.password1 }}
+        {% if form.password1.errors %}
+          <div class="form-error">{{ form.password1.errors }}</div>
+        {% endif %}
+      </div>
+
+      <!-- CONFIRM PASSWORD -->
+      <div class="form-group">
+        <label class="form-label">Confirm Password</label>
+        {{ form.password2 }}
+        {% if form.password2.errors %}
+          <div class="form-error">{{ form.password2.errors }}</div>
+        {% endif %}
+      </div>
+
+      <button class="btn btn-primary btn-full">
+        Register
+      </button>
+    </form>
+
+    <p style="text-align:center;margin-top:1.5rem;font-size:0.85rem;color:var(--fg-muted)">
+      Already have an account?
+      <a href="{% url 'login' %}" style="color:var(--primary);font-weight:600">
+        Login
+      </a>
+    </p>
+
+  </div>
+
+</div>
+{% endblock %}
