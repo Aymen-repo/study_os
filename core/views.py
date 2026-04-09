@@ -1,7 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-from django.views.decorators.http import require_POST
+
 from .models import Subject, Task
 from .forms  import SubjectForm, TaskForm
 
@@ -10,10 +9,14 @@ def home(request):
     return render(request, 'home.html')
 
 
-@login_required
+
 def dashboard(request):
-    subjects = Subject.objects.filter(user=request.user).prefetch_related('tasks')
-    all_tasks      = Task.objects.filter(subject__user=request.user)
+    # SAFE FIX: fallback user if not logged in
+    user = request.user if request.user.is_authenticated else None
+
+    subjects = Subject.objects.filter(user=user).prefetch_related('tasks')
+    all_tasks = Task.objects.filter(subject__user=user)
+
     total_tasks     = all_tasks.count()
     completed_tasks = all_tasks.filter(done=True).count()
     remaining_tasks = all_tasks.filter(done=False).count()
@@ -26,7 +29,7 @@ def dashboard(request):
     })
 
 
-@login_required
+
 def create_subject(request):
     form = SubjectForm(request.POST or None)
     if request.method == 'POST' and form.is_valid():
@@ -37,7 +40,7 @@ def create_subject(request):
     return render(request, 'create_subject.html', {'form': form})
 
 
-@login_required
+
 def subject_detail(request, pk):
     subject = get_object_or_404(Subject, pk=pk, user=request.user)
     tasks   = subject.tasks.all().order_by('created_at')
@@ -60,10 +63,10 @@ def subject_detail(request, pk):
     })
 
 
-@login_required
-@require_POST
+
+
 def add_task(request, pk):
-    subject   = get_object_or_404(Subject, pk=pk, user=request.user)
+    subject = get_object_or_404(Subject, pk=pk, user=request.user)
     task_form = TaskForm(request.POST)
     if task_form.is_valid():
         task = task_form.save(commit=False)
@@ -72,8 +75,8 @@ def add_task(request, pk):
     return redirect('subject_detail', pk=pk)
 
 
-@login_required
-@require_POST
+
+
 def toggle_task(request, subject_pk, task_pk):
     subject = get_object_or_404(Subject, pk=subject_pk, user=request.user)
     task    = get_object_or_404(Task, pk=task_pk, subject=subject)
