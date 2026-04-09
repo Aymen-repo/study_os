@@ -55,7 +55,7 @@ ROOT_URLCONF = 'study_os.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],   # <-- point to your templates folder
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
