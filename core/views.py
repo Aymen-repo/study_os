@@ -29,7 +29,6 @@ def register_view(request):
             messages.success(request, "Account created successfully 🎉")
             return redirect('dashboard')
         else:
-            # 🔥 THIS WILL SHOW ERROR IN TERMINAL
             print(form.errors)
             messages.error(request, "Please fix the errors below")
 
@@ -84,7 +83,7 @@ def create_subject(request):
         subject = form.save(commit=False)
         subject.user = request.user
         subject.save()
-        return redirect('subject_detail', pk=subject.pk)
+        return redirect('subject_detail', pk=subject.pk)  # ✅ redirect works
 
     return render(request, 'create_subject.html', {'form': form})
 
@@ -94,7 +93,7 @@ def subject_detail(request, pk):
     subject = get_object_or_404(Subject, pk=pk, user=request.user)
     tasks = subject.tasks.all().order_by('created_at')
 
-    return render(request, 'subject_detail.html', {
+    return render(request, 'subject_details.html', {  # ✅ FIXED TEMPLATE NAME
         'subject': subject,
         'tasks': tasks,
         'incomplete_tasks': tasks.filter(done=False),
@@ -130,6 +129,7 @@ def toggle_task(request, subject_pk, task_pk):
     done = tasks.filter(done=True).count()
 
     return JsonResponse({
+        'success': True,  # ✅ IMPORTANT for your JS
         'done': task.done,
         'progress': round(done / total * 100) if total else 0,
         'done_count': done,
