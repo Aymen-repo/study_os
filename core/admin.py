@@ -5,3 +5,4 @@ from .models import Subject, Task
 
 admin.site.register(Subject)
 admin.site.register(Task)
+#
