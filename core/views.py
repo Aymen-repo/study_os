@@ -1,6 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
-
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
@@ -136,3 +135,15 @@ def toggle_task(request, subject_pk, task_pk):
         'done_count': done,
         'total_count': total,
     })
+
+
+# ================= DELETE TASK (NEW) ================= #
+
+@login_required
+def delete_task(request, pk):
+    if request.method == "POST":
+        task = get_object_or_404(Task, pk=pk, subject__user=request.user)
+        task.delete()
+        return JsonResponse({'success': True})
+
+    return JsonResponse({'success': False}, status=400)

@@ -2,6 +2,7 @@
 {% block title %}{{ subject.name }} — TaskFlow{% endblock %}
 {% block nav_dashboard %}active{% endblock %}
 
+
 {% block extra_head %}
 <style>
   /* ── Subject header ────────────────────────────────── */
@@ -269,6 +270,25 @@
     .add-task-row { flex-direction: column; align-items: stretch; }
     .btn-add-task { width: 100%; justify-content: center; }
   }
+
+  .task-delete-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--fg-muted);
+  padding: 6px;
+  border-radius: var(--r-md);
+  transition: all var(--dur) var(--ease);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.task-delete-btn:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  transform: scale(1.05);
+}
 </style>
 {% endblock %}
 
@@ -395,38 +415,78 @@
       {% endif %}
 
       {% if incomplete_tasks %}
-        {% for task in incomplete_tasks %}
-          <div class="task-item" id="task-{{ task.id }}" onclick="toggleTask({{ task.id }})">
-            <div class="task-cb">
-              <!-- empty circle -->
-            </div>
-            <span class="task-text">{{ task.title }}</span>
-            <span class="done-badge">
-              <span class="pill pill-green">Done</span>
-            </span>
-          </div>
-        {% endfor %}
-      {% endif %}
+  {% for task in incomplete_tasks %}
+
+  <div class="task-item" id="task-{{ task.id }}" onclick="toggleTask({{ task.id }})">
+
+    <div class="task-cb"></div>
+
+    <span class="task-text">{{ task.title }}</span>
+
+    <!-- DELETE BUTTON -->
+    <button
+      type="button"
+      class="task-delete-btn"
+      onclick="deleteTask(event, {{ task.id }})"
+      title="Delete task"
+    >
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2"
+           stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="3 6 5 6 21 6"/>
+        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+        <path d="M10 11v6"/>
+        <path d="M14 11v6"/>
+        <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+      </svg>
+    </button>
+
+  </div>
+
+  {% endfor %}
+{% endif %}
 
       {% if incomplete_tasks and completed_tasks %}
         <div class="divider">Completed</div>
       {% endif %}
 
       {% if completed_tasks %}
-        {% for task in completed_tasks %}
-          <div class="task-item is-done" id="task-{{ task.id }}" onclick="toggleTask({{ task.id }})">
-            <div class="task-cb">
-              <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="2 6 5 9 10 3"/>
-              </svg>
-            </div>
-            <span class="task-text">{{ task.title }}</span>
-            <span class="done-badge">
-              <span class="pill pill-green">Done</span>
-            </span>
-          </div>
-        {% endfor %}
-      {% endif %}
+  {% for task in completed_tasks %}
+
+  <div class="task-item is-done" id="task-{{ task.id }}" onclick="toggleTask({{ task.id }})">
+
+    <div class="task-cb">
+      <svg width="10" height="10" viewBox="0 0 12 12" fill="none"
+           stroke="white" stroke-width="2.5"
+           stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="2 6 5 9 10 3"/>
+      </svg>
+    </div>
+
+    <span class="task-text">{{ task.title }}</span>
+
+    <!-- DELETE BUTTON -->
+    <button
+      type="button"
+      class="task-delete-btn"
+      onclick="deleteTask(event, {{ task.id }})"
+      title="Delete task"
+    >
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2"
+           stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="3 6 5 6 21 6"/>
+        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+        <path d="M10 11v6"/>
+        <path d="M14 11v6"/>
+        <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+      </svg>
+    </button>
+
+  </div>
+
+  {% endfor %}
+{% endif %}
 
     {% endif %}
   </div>
@@ -500,5 +560,27 @@
     var sub = document.querySelector('.sh-subtitle');
     if (sub && total > 0) sub.textContent = done + ' of ' + total + ' task' + (total !== 1 ? 's' : '') + ' completed';
   }
+  function deleteTask(event, id) {
+  event.stopPropagation();
+
+  
+
+  var csrf = document.querySelector('#csrf-helper [name=csrfmiddlewaretoken]').value;
+
+  fetch('/task/delete/' + id + '/', {
+    method: 'POST',
+    headers: {
+      'X-CSRFToken': csrf,
+      'X-Requested-With': 'XMLHttpRequest'
+    }
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.success) {
+      document.getElementById('task-' + id).remove();
+    }
+  })
+  .catch(() => location.reload());
+}
 </script>
 {% endblock %}
