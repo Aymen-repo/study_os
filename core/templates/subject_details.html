@@ -289,6 +289,30 @@
   color: #ef4444;
   transform: scale(1.05);
 }
+.btn-delete-subject {
+  width: 100%;
+  padding: 0.65rem 1rem;
+  border-radius: var(--r-md);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  background: rgba(239, 68, 68, 0.08);
+  color: #ef4444;
+  font-weight: 700;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all var(--dur) var(--ease);
+  box-shadow: var(--sh-xs);
+}
+
+.btn-delete-subject:hover {
+  background: #ef4444;
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(239, 68, 68, 0.25);
+}
+
+.btn-delete-subject:active {
+  transform: scale(0.98);
+}
 </style>
 {% endblock %}
 
@@ -303,38 +327,60 @@
     Dashboard
   </a>
 
-  <!-- ── Subject hero ──────────────────────────────────── -->
-  <div class="subject-hero">
-    <div class="subject-hero-left">
-      <div class="sh-label">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
-        </svg>
-        Subject
-      </div>
-      <h1 class="sh-title">{{ subject.name }}</h1>
-      <p class="sh-subtitle">
-        {% if tasks.count == 0 %}
-          No tasks yet — add your first one below
-        {% else %}
-          {{ done_count }} of {{ tasks.count }} task{{ tasks.count|pluralize }} completed
-        {% endif %}
-      </p>
+<!-- ── Subject hero ──────────────────────────────────── -->
+<div class="subject-hero">
+
+  <div class="subject-hero-left">
+    <div class="sh-label">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+      </svg>
+      Subject
     </div>
 
-    {% if tasks.count > 0 %}
-    <div class="sh-progress-block">
-      <div class="sh-pct-row">
-        <span class="sh-pct-label">Progress</span>
-        <span class="sh-pct-value {% if progress == 100 %}complete{% endif %}" id="progressPct">{{ progress }}%</span>
-      </div>
-      <div class="progress-track" style="height:0.5rem">
-        <div class="progress-fill {% if progress == 100 %}complete{% endif %}" id="progressBar" style="width:{{ progress }}%"></div>
-      </div>
-    </div>
-    {% endif %}
+    <h1 class="sh-title">{{ subject.name }}</h1>
+
+    <p class="sh-subtitle">
+      {% if tasks.count == 0 %}
+        No tasks yet — add your first one below
+      {% else %}
+        {{ done_count }} of {{ tasks.count }} task{{ tasks.count|pluralize }} completed
+      {% endif %}
+    </p>
   </div>
 
+  {% if tasks.count > 0 %}
+  <div class="sh-progress-block">
+
+    <div class="sh-pct-row">
+      <span class="sh-pct-label">Progress</span>
+      <span class="sh-pct-value {% if progress == 100 %}complete{% endif %}" id="progressPct">
+        {{ progress }}%
+      </span>
+    </div>
+
+    <div class="progress-track" style="height:0.5rem">
+      <div class="progress-fill {% if progress == 100 %}complete{% endif %}"
+           id="progressBar"
+           style="width:{{ progress }}%">
+      </div>
+    </div>
+
+  </div>
+  {% endif %}
+
+  <!-- ✅ DELETE SUBJECT BUTTON (ALWAYS VISIBLE) -->
+  <form method="post"
+      action="{% url 'delete_subject' subject.pk %}"
+      style="margin-top: 0.75rem;">
+  {% csrf_token %}
+  <button type="submit" class="btn-delete-subject">
+    Delete Subject
+  </button>
+</form>
+
+</div>
   <!-- ── Add task ──────────────────────────────────────── -->
   <div class="add-panel">
     <div class="add-panel-label">

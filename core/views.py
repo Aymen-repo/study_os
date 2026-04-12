@@ -137,7 +137,7 @@ def toggle_task(request, subject_pk, task_pk):
     })
 
 
-# ================= DELETE TASK (NEW) ================= #
+# ================= DELETE TASK ================= #
 
 @login_required
 def delete_task(request, pk):
@@ -147,3 +147,16 @@ def delete_task(request, pk):
         return JsonResponse({'success': True})
 
     return JsonResponse({'success': False}, status=400)
+
+
+# ================= DELETE SUBJECT (FIXED) ================= #
+
+@login_required
+def delete_subject(request, pk):
+    subject = get_object_or_404(Subject, pk=pk, user=request.user)
+
+    if request.method == "POST":
+        subject.delete()
+        return redirect('dashboard')
+
+    return redirect('subject_detail', pk=pk)
