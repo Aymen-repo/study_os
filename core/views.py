@@ -29,7 +29,6 @@ def register_view(request):
             messages.success(request, "Account created successfully 🎉")
             return redirect('dashboard')
         else:
-            print(form.errors)
             messages.error(request, "Please fix the errors below")
 
     return render(request, 'register.html', {'form': form})
@@ -54,7 +53,6 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
-    messages.info(request, "Logged out successfully")
     return redirect('home')
 
 
@@ -83,7 +81,7 @@ def create_subject(request):
         subject = form.save(commit=False)
         subject.user = request.user
         subject.save()
-        return redirect('subject_detail', pk=subject.pk)  # ✅ redirect works
+        return redirect('subject_detail', pk=subject.pk)
 
     return render(request, 'create_subject.html', {'form': form})
 
@@ -93,13 +91,16 @@ def subject_detail(request, pk):
     subject = get_object_or_404(Subject, pk=pk, user=request.user)
     tasks = subject.tasks.all().order_by('created_at')
 
-    return render(request, 'subject_details.html', {  # ✅ FIXED TEMPLATE NAME
+    done_count = tasks.filter(done=True).count()
+
+    return render(request, 'subject_details.html', {
         'subject': subject,
         'tasks': tasks,
         'incomplete_tasks': tasks.filter(done=False),
         'completed_tasks': tasks.filter(done=True),
         'progress': subject.progress,
         'task_form': TaskForm(),
+        'done_count': done_count,
     })
 
 
@@ -129,7 +130,7 @@ def toggle_task(request, subject_pk, task_pk):
     done = tasks.filter(done=True).count()
 
     return JsonResponse({
-        'success': True,  # ✅ IMPORTANT for your JS
+        'success': True,
         'done': task.done,
         'progress': round(done / total * 100) if total else 0,
         'done_count': done,

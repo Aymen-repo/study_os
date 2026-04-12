@@ -448,26 +448,27 @@
 
   // ── Task toggle ──────────────────────────────────────
   function toggleTask(id) {
-    var csrf = document.querySelector('#csrf-helper [name=csrfmiddlewaretoken]').value;
-    var url  = '/subjects/{{ subject.id }}/tasks/' + id + '/toggle/';
+  var csrf = document.querySelector('#csrf-helper [name=csrfmiddlewaretoken]').value;
 
-    fetch(url, {
-      method: 'POST',
-      headers: {
-        'X-CSRFToken': csrf,
-        'X-Requested-With': 'XMLHttpRequest',
-        'Content-Type': 'application/json'
-      }
-    })
-    .then(function(r){ return r.json(); })
-    .then(function(d){
-      if (d.success) {
-        applyTaskUI(id, d.done);
-        updateProgress(d.progress, d.done_count, d.total_count);
-      }
-    })
-    .catch(function(){ window.location.reload(); });
-  }
+  var url  = '/subject/{{ subject.id }}/toggle/' + id + '/';
+
+  fetch(url, {
+    method: 'POST',
+    headers: {
+      'X-CSRFToken': csrf,
+      'X-Requested-With': 'XMLHttpRequest',
+      'Content-Type': 'application/json'
+    }
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(d){
+    if (d.success) {
+      applyTaskUI(id, d.done);
+      updateProgress(d.progress, d.done_count, d.total_count);
+    }
+  })
+  .catch(function(){ window.location.reload(); });
+}
 
   function applyTaskUI(id, done) {
     var el = document.getElementById('task-' + id);
