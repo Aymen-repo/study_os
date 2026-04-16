@@ -16,11 +16,11 @@
     margin: 0 auto;
   }
 
-  /* Decorative header */
   .create-hero {
     text-align: center;
     margin-bottom: 2rem;
   }
+
   .create-hero-icon {
     width: 3.5rem;
     height: 3.5rem;
@@ -32,6 +32,7 @@
     margin: 0 auto 1.125rem;
     box-shadow: 0 4px 18px var(--primary-glow);
   }
+
   .create-hero h1 {
     font-size: 1.625rem;
     font-weight: 800;
@@ -39,12 +40,12 @@
     color: var(--fg);
     margin-bottom: 0.375rem;
   }
+
   .create-hero p {
     font-size: 0.9rem;
     color: var(--fg-muted);
   }
 
-  /* Form card */
   .form-surface {
     background: var(--surface);
     border: 1px solid var(--border-2);
@@ -54,59 +55,79 @@
     position: relative;
     overflow: hidden;
   }
+
   .form-surface::before {
     content: '';
     position: absolute;
-    top: 0; left: 0; right: 0;
+    top: 0;
+    left: 0;
+    right: 0;
     height: 3px;
     background: linear-gradient(90deg, var(--indigo-500), var(--violet-500));
     border-radius: var(--r-2xl) var(--r-2xl) 0 0;
   }
 
   .input-group {
-    position: relative;
+    margin-bottom: 1rem;
   }
-  .input-icon {
-    position: absolute;
-    left: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--fg-faint);
-    pointer-events: none;
-    transition: color var(--dur);
-  }
-  .input-icon-right {
-    position: absolute;
-    right: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 0.75rem;
-    color: var(--fg-faint);
-    pointer-events: none;
-  }
+
   .form-input-lg {
     width: 100%;
-    padding: 0.875rem 3rem 0.875rem 2.75rem;
+    padding: 0.875rem 1rem;
     border: 1.5px solid var(--border);
     border-radius: var(--r-lg);
     background: var(--bg-subtle);
     color: var(--fg);
     font-size: 1rem;
-    font-weight: 500;
+    font-weight: 600;
     outline: none;
-    transition: border-color var(--dur), box-shadow var(--dur), background var(--dur);
-    box-shadow: var(--sh-xs), var(--sh-inset);
   }
-  .form-input-lg::placeholder { color: var(--fg-faint); font-weight: 400; }
+
   .form-input-lg:focus {
     border-color: var(--primary);
     background: var(--surface);
-    box-shadow: 0 0 0 4px var(--primary-glow), var(--sh-xs);
   }
-  .form-input-lg:focus + .input-icon,
-  .input-group:focus-within .input-icon { color: var(--primary); }
-  .form-input-lg.is-error { border-color: var(--red); }
-  .form-input-lg.is-error:focus { box-shadow: 0 0 0 4px rgba(220,38,38,0.14); }
+
+  /* ================= COLOR PICKER ================= */
+  .color-picker {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding: 0.9rem;
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    background: var(--bg-subtle);
+  }
+
+  .color-preview {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .color-dot {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99,102,241,0.2);
+  }
+
+  .color-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--fg-muted);
+  }
+
+  .color-picker input[type="color"] {
+    width: 45px;
+    height: 35px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+  }
 
   .btn-create {
     width: 100%;
@@ -118,21 +139,8 @@
     color: #fff;
     border: none;
     cursor: pointer;
-    box-shadow: 0 3px 14px var(--primary-glow), var(--sh-xs);
-    transition: all var(--dur) var(--ease);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
     margin-top: 1.25rem;
   }
-  .btn-create:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 22px var(--primary-glow), var(--sh-sm);
-    opacity: 0.92;
-  }
-  .btn-create:active { transform: scale(0.98); }
-  .btn-create:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
 
   .btn-cancel {
     width: 100%;
@@ -143,37 +151,11 @@
     background: transparent;
     color: var(--fg-muted);
     border: 1.5px solid var(--border);
-    cursor: pointer;
-    transition: all var(--dur);
-    text-align: center;
     display: block;
     margin-top: 0.75rem;
-  }
-  .btn-cancel:hover { background: var(--bg-subtle); color: var(--fg); border-color: var(--border-2); }
-
-  .form-hint-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 0.5rem;
-  }
-  .form-hint-text { font-size: 0.75rem; color: var(--fg-faint); }
-
-  .after-hint {
     text-align: center;
-    margin-top: 1.5rem;
-    font-size: 0.8125rem;
-    color: var(--fg-faint);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.375rem;
   }
 
-  @media (max-width: 640px) {
-    .create-wrap { padding: 2rem 1rem 3rem; align-items: flex-start; }
-    .form-surface { padding: 1.5rem; }
-  }
 </style>
 {% endblock %}
 
@@ -181,96 +163,58 @@
 <div class="create-wrap">
   <div class="create-card">
 
-    <!-- Back link -->
-    <a href="{% url 'dashboard' %}" class="back-link">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
-      </svg>
-      Back to Dashboard
-    </a>
+    <a href="{% url 'dashboard' %}" class="back-link">← Back</a>
 
-    <!-- Hero text -->
     <div class="create-hero">
-      <div class="create-hero-icon">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
-        </svg>
-      </div>
+      <div class="create-hero-icon">📘</div>
       <h1>Create a Subject</h1>
-      <p>Give your new workspace a name and start adding tasks.</p>
+      <p>Give your workspace a name and color</p>
     </div>
 
-    <!-- Form card -->
     <div class="form-surface">
-      <form method="post" action="{% url 'create_subject' %}" id="createForm">
+      <form method="post">
         {% csrf_token %}
 
-        <div class="form-group">
-          <label class="form-label" for="{{ form.name.id_for_label }}">Subject name</label>
-          <div class="input-group">
-            <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
-            </svg>
-            <input
-              type="text"
-              id="{{ form.name.id_for_label }}"
-              name="{{ form.name.html_name }}"
-              value="{{ form.name.value|default:'' }}"
-              placeholder="e.g. Mathematics, Computer Science…"
-              class="form-input-lg {% if form.name.errors %}is-error{% endif %}"
-              maxlength="80"
-              autocomplete="off"
-              autofocus
-              oninput="onInput(this)"
-            />
-            <span class="input-icon-right" id="counter">{{ form.name.value|default:''|length }}/80</span>
-          </div>
-          {% if form.name.errors %}
-            <ul class="errorlist">
-              {% for e in form.name.errors %}<li>{{ e }}</li>{% endfor %}
-            </ul>
-          {% endif %}
-          <div class="form-hint-row">
-            <span class="form-hint-text">Choose a clear, descriptive name</span>
-          </div>
+        <div class="input-group">
+          <input type="text"
+                 name="name"
+                 placeholder="Subject name..."
+                 class="form-input-lg"
+                 maxlength="80"
+                 required>
         </div>
 
-        {% if form.non_field_errors %}
-          <div class="form-error" style="margin-bottom:0.75rem">
-            {% for e in form.non_field_errors %}{{ e }}{% endfor %}
+        <!-- COLOR -->
+        <div class="color-picker">
+          <div class="color-preview">
+            <div class="color-dot" id="colorDot"></div>
+            <span class="color-label">Choose color</span>
           </div>
-        {% endif %}
 
-        <button type="submit" class="btn-create" id="submitBtn" disabled>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-          </svg>
+          <input type="color"
+                 name="color"
+                 id="colorInput"
+                 value="#6366f1">
+        </div>
+
+        <button type="submit" class="btn-create">
           Create Subject
         </button>
+
         <a href="{% url 'dashboard' %}" class="btn-cancel">Cancel</a>
       </form>
     </div>
 
-    <p class="after-hint">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-      </svg>
-      You can add tasks immediately after creating the subject.
-    </p>
-
   </div>
 </div>
-{% endblock %}
 
-{% block extra_scripts %}
 <script>
-  function onInput(input) {
-    var val = input.value;
-    document.getElementById('counter').textContent = val.length + '/80';
-    document.getElementById('submitBtn').disabled = val.trim().length < 2;
-  }
-  // Run once on load in case form has a pre-filled value (e.g. after error)
-  var inp = document.querySelector('.form-input-lg');
-  if (inp) onInput(inp);
+  const colorInput = document.getElementById("colorInput");
+  const colorDot = document.getElementById("colorDot");
+
+  colorInput.addEventListener("input", function () {
+    colorDot.style.background = this.value;
+    colorDot.style.boxShadow = `0 0 0 3px ${this.value}33`;
+  });
 </script>
 {% endblock %}

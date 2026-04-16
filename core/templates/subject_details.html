@@ -2,10 +2,9 @@
 {% block title %}{{ subject.name }} — TaskFlow{% endblock %}
 {% block nav_dashboard %}active{% endblock %}
 
-
 {% block extra_head %}
 <style>
-  /* ── Subject header ────────────────────────────────── */
+  /* ── Subject hero ────────────────────────────────── */
   .subject-hero {
     display: flex;
     align-items: flex-start;
@@ -20,6 +19,7 @@
     position: relative;
     overflow: hidden;
   }
+
   .subject-hero::after {
     content: '';
     position: absolute;
@@ -29,6 +29,7 @@
     background: radial-gradient(circle, rgba(99,102,241,0.12) 0%, transparent 70%);
     pointer-events: none;
   }
+
   html.dark .subject-hero {
     background: linear-gradient(135deg, rgba(99,102,241,0.08) 0%, rgba(139,92,246,0.05) 100%);
     border-color: rgba(99,102,241,0.2);
@@ -43,9 +44,6 @@
     letter-spacing: 0.08em;
     color: var(--primary);
     margin-bottom: 0.375rem;
-    display: flex;
-    align-items: center;
-    gap: 0.375rem;
   }
 
   .sh-title {
@@ -53,115 +51,83 @@
     font-weight: 800;
     letter-spacing: -0.03em;
     color: var(--fg);
-    margin-bottom: 0.375rem;
-    line-height: 1.1;
-  }
-  .sh-subtitle { font-size: 0.9rem; color: var(--fg-muted); }
-
-  /* Progress block */
-  .sh-progress-block { min-width: 10rem; }
-  @media (max-width: 480px) {
-    .sh-progress-block { width: 100%; }
-    .subject-hero { padding: 1.25rem; }
   }
 
-  .sh-pct-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    margin-bottom: 0.375rem;
+  .sh-subtitle {
+    font-size: 0.9rem;
+    color: var(--fg-muted);
   }
-  .sh-pct-label { font-size: 0.6875rem; font-weight: 600; color: var(--fg-muted); text-transform: uppercase; letter-spacing: 0.04em; }
+
   .sh-pct-value {
     font-size: 1.75rem;
     font-weight: 800;
-    letter-spacing: -0.04em;
     color: var(--primary);
-    line-height: 1;
   }
-  .sh-pct-value.complete { color: var(--green); }
 
-  /* ── Add task panel ────────────────────────────────── */
+  .sh-pct-value.complete {
+    color: var(--green);
+  }
+
+  /* ── progress bar ────────────────────────────────── */
+  .progress-track {
+    width: 160px;
+    height: 6px;
+    background: var(--border-2);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-top: 0.5rem;
+  }
+
+  .progress-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--primary);
+    transition: width 0.4s ease;
+  }
+
+  /* ── Add panel ────────────────────────────────── */
   .add-panel {
     background: var(--surface);
     border: 1px solid var(--border-2);
     border-radius: var(--r-xl);
-    box-shadow: var(--sh-sm);
     padding: 1.375rem 1.5rem;
     margin-bottom: 1.5rem;
   }
-  .add-panel-label {
-    font-size: 0.8125rem;
-    font-weight: 700;
-    color: var(--fg-2);
-    margin-bottom: 0.75rem;
-    display: flex;
-    align-items: center;
-    gap: 0.375rem;
-    letter-spacing: -0.01em;
-  }
+
   .add-task-row {
     display: flex;
     gap: 0.625rem;
-    align-items: center;
   }
-  .task-input-wrap { position: relative; flex: 1; }
-  .task-input-icon {
-    position: absolute;
-    left: 0.875rem;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--fg-faint);
-    pointer-events: none;
-    transition: color var(--dur);
-  }
+
   .task-input {
     width: 100%;
-    padding: 0.6875rem 1rem 0.6875rem 2.5rem;
-    border: 1.5px solid var(--border);
+    padding: 0.6875rem 1rem;
     border-radius: var(--r-md);
+    border: 1.5px solid var(--border);
     background: var(--bg-subtle);
     color: var(--fg);
-    font-size: 0.9375rem;
-    outline: none;
-    transition: border-color var(--dur), box-shadow var(--dur), background var(--dur);
-    box-shadow: var(--sh-xs);
   }
-  .task-input::placeholder { color: var(--fg-faint); }
-  .task-input:focus {
-    border-color: var(--primary);
-    background: var(--surface);
-    box-shadow: 0 0 0 4px var(--primary-glow);
-  }
-  .task-input:focus + .task-input-icon { color: var(--primary); }
-  .task-input-wrap:focus-within .task-input-icon { color: var(--primary); }
 
   .btn-add-task {
     padding: 0.6875rem 1.25rem;
     border-radius: var(--r-md);
-    font-size: 0.875rem;
-    font-weight: 700;
     background: linear-gradient(135deg, var(--indigo-500), var(--violet-500));
     color: #fff;
     border: none;
     cursor: pointer;
-    box-shadow: 0 2px 10px var(--primary-glow);
-    transition: all var(--dur) var(--ease);
-    white-space: nowrap;
-    display: flex;
-    align-items: center;
-    gap: 0.375rem;
   }
-  .btn-add-task:hover {
-    opacity: 0.88;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 16px var(--primary-glow);
-  }
-  .btn-add-task:active { transform: scale(0.97); }
-  .btn-add-task:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 
-  /* ── Task list ─────────────────────────────────────── */
-  .task-list { display: flex; flex-direction: column; gap: 0.5rem; }
+  .btn-add-task:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  /* ── Tasks ────────────────────────────────── */
+  .task-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
 
   .task-item {
     display: flex;
@@ -171,462 +137,208 @@
     border-radius: var(--r-lg);
     background: var(--surface);
     border: 1px solid var(--border-2);
-    box-shadow: var(--sh-xs);
     cursor: pointer;
-    transition: all var(--dur) var(--ease);
-    user-select: none;
-    position: relative;
-    overflow: hidden;
+    transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+    will-change: transform, opacity;
   }
-  .task-item::before {
-    content: '';
-    position: absolute;
-    left: 0; top: 0; bottom: 0;
-    width: 3px;
-    border-radius: 99px 0 0 99px;
-    background: transparent;
-    transition: background var(--dur);
-  }
-  .task-item:hover { border-color: rgba(99,102,241,0.25); box-shadow: var(--sh-md); transform: translateX(2px); }
-  .task-item:hover::before { background: var(--primary); }
-  .task-item:active { transform: scale(0.99); }
 
-  /* Done state */
   .task-item.is-done {
     background: var(--bg-subtle);
-    border-color: var(--border);
-    box-shadow: none;
+    opacity: 0.75;
   }
-  .task-item.is-done::before { background: var(--green); }
-  .task-item.is-done:hover { transform: translateX(2px); border-color: rgba(5,150,105,0.25); }
 
-  /* Checkbox */
-  .task-cb {
-    flex-shrink: 0;
-    width: 1.375rem;
-    height: 1.375rem;
+  /* ✨ click animation */
+  .task-item.anim {
+    animation: taskPop 0.28s cubic-bezier(0.2, 0.9, 0.2, 1);
+  }
+
+  @keyframes taskPop {
+    0% { transform: scale(1); }
+    40% { transform: scale(0.97); }
+    70% { transform: scale(1.01); }
+    100% { transform: scale(1); }
+  }
+
+  /* ✨ ICON SYSTEM */
+  .task-icon {
+    width: 18px;
+    height: 18px;
     border-radius: 50%;
-    border: 2px solid var(--border);
+    border: 2px solid var(--fg-muted);
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all var(--dur) var(--ease);
-    background: var(--surface);
-  }
-  .task-item:hover .task-cb { border-color: var(--primary); background: var(--primary-pale); }
-  .task-item.is-done .task-cb {
-    background: var(--green);
-    border-color: var(--green);
-    box-shadow: 0 2px 8px var(--green-pale);
-  }
-
-  /* Task text */
-  .task-text {
-    flex: 1;
-    font-size: 0.9375rem;
-    color: var(--fg);
-    font-weight: 500;
-    line-height: 1.4;
-    transition: color var(--dur);
-  }
-  .task-item.is-done .task-text {
-    text-decoration: line-through;
-    color: var(--fg-faint);
-    font-weight: 400;
-  }
-
-  /* Done badge */
-  .done-badge {
     flex-shrink: 0;
-    opacity: 0;
-    transition: opacity var(--dur);
-  }
-  .task-item.is-done .done-badge { opacity: 1; }
-
-  /* Completion celebration message */
-  .all-done-banner {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 1rem 1.25rem;
-    border-radius: var(--r-lg);
-    background: var(--green-pale);
-    border: 1px solid rgba(5,150,105,0.25);
-    color: var(--green);
-    font-size: 0.9rem;
-    font-weight: 600;
+    transition: all 0.2s ease;
   }
 
-  /* ── Counts pill row ───────────────────────────────── */
-  .task-counts {
-    display: flex;
-    align-items: center;
-    gap: 0.625rem;
-    margin-bottom: 0.75rem;
-    flex-wrap: wrap;
+  .task-item.is-done .task-icon {
+    background: var(--primary);
+    border-color: var(--primary);
   }
 
-  @media (max-width: 480px) {
-    .add-task-row { flex-direction: column; align-items: stretch; }
-    .btn-add-task { width: 100%; justify-content: center; }
+  .task-item.is-done .task-icon::after {
+    content: "";
+    width: 6px;
+    height: 10px;
+    border: 2px solid white;
+    border-top: none;
+    border-left: none;
+    transform: rotate(45deg);
+    margin-top: -1px;
   }
 
   .task-delete-btn {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  color: var(--fg-muted);
-  padding: 6px;
-  border-radius: var(--r-md);
-  transition: all var(--dur) var(--ease);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--fg-muted);
+  }
 
-.task-delete-btn:hover {
-  background: rgba(239, 68, 68, 0.1);
-  color: #ef4444;
-  transform: scale(1.05);
-}
-.btn-delete-subject {
-  width: 100%;
-  padding: 0.65rem 1rem;
-  border-radius: var(--r-md);
-  border: 1px solid rgba(239, 68, 68, 0.25);
-  background: rgba(239, 68, 68, 0.08);
-  color: #ef4444;
-  font-weight: 700;
-  font-size: 0.875rem;
-  cursor: pointer;
-  transition: all var(--dur) var(--ease);
-  box-shadow: var(--sh-xs);
-}
+  .task-delete-btn:hover {
+    color: #ef4444;
+  }
 
-.btn-delete-subject:hover {
-  background: #ef4444;
-  color: white;
-  transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(239, 68, 68, 0.25);
-}
+  .btn-delete-subject {
+    margin-top: 0.75rem;
+    padding: 0.65rem 1rem;
+    border-radius: var(--r-md);
+    border: 1px solid rgba(239,68,68,0.25);
+    background: rgba(239,68,68,0.08);
+    color: #ef4444;
+    font-weight: 700;
+    cursor: pointer;
+  }
 
-.btn-delete-subject:active {
-  transform: scale(0.98);
-}
+  .btn-delete-subject:hover {
+    background: #ef4444;
+    color: white;
+  }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="container" style="max-width:720px">
 
-  <!-- ── Back ─────────────────────────────────────────── -->
-  <a href="{% url 'dashboard' %}" class="back-link">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-      <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
-    </svg>
-    Dashboard
-  </a>
+  <a href="{% url 'dashboard' %}" class="back-link">← Dashboard</a>
 
-<!-- ── Subject hero ──────────────────────────────────── -->
-<div class="subject-hero">
+  <div class="subject-hero">
 
-  <div class="subject-hero-left">
-    <div class="sh-label">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
-        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
-      </svg>
-      Subject
+    <div class="subject-hero-left">
+      <div class="sh-label">Subject</div>
+      <h1 class="sh-title">{{ subject.name }}</h1>
+
+      <p class="sh-subtitle">
+        {% if tasks.count == 0 %}
+          No tasks yet
+        {% else %}
+          {{ done_count }} of {{ tasks.count }} completed
+        {% endif %}
+      </p>
     </div>
 
-    <h1 class="sh-title">{{ subject.name }}</h1>
-
-    <p class="sh-subtitle">
-      {% if tasks.count == 0 %}
-        No tasks yet — add your first one below
-      {% else %}
-        {{ done_count }} of {{ tasks.count }} task{{ tasks.count|pluralize }} completed
-      {% endif %}
-    </p>
-  </div>
-
-  {% if tasks.count > 0 %}
-  <div class="sh-progress-block">
-
-    <div class="sh-pct-row">
-      <span class="sh-pct-label">Progress</span>
-      <span class="sh-pct-value {% if progress == 100 %}complete{% endif %}" id="progressPct">
-        {{ progress }}%
-      </span>
-    </div>
-
-    <div class="progress-track" style="height:0.5rem">
-      <div class="progress-fill {% if progress == 100 %}complete{% endif %}"
-           id="progressBar"
-           style="width:{{ progress }}%">
+    {% if tasks.count > 0 %}
+    <div>
+      <span class="sh-pct-value">{{ progress }}%</span>
+      <div class="progress-track">
+        <div class="progress-fill" style="width:{{ progress }}%"></div>
       </div>
     </div>
+    {% endif %}
+
+    <form method="post" action="{% url 'delete_subject' subject.pk %}">
+      {% csrf_token %}
+      <button class="btn-delete-subject" type="submit">Delete Subject</button>
+    </form>
 
   </div>
-  {% endif %}
 
-  <!-- ✅ DELETE SUBJECT BUTTON (ALWAYS VISIBLE) -->
-  <form method="post"
-      action="{% url 'delete_subject' subject.pk %}"
-      style="margin-top: 0.75rem;">
-  {% csrf_token %}
-  <button type="submit" class="btn-delete-subject">
-    Delete Subject
-  </button>
-</form>
-
-</div>
-  <!-- ── Add task ──────────────────────────────────────── -->
+  <!-- Add Task -->
   <div class="add-panel">
-    <div class="add-panel-label">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-      </svg>
-      Add a new task
-    </div>
-    <form method="post" action="{% url 'add_task' subject.id %}" id="addTaskForm">
+    <form method="post" action="{% url 'add_task' subject.id %}">
       {% csrf_token %}
       <div class="add-task-row">
-        <div class="task-input-wrap">
-          <svg class="task-input-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/>
-            <line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
-          </svg>
-          <input
-            type="text"
-            name="title"
-            id="taskInput"
-            placeholder="What needs to be done?"
-            class="task-input"
-            maxlength="200"
-            autocomplete="off"
-          />
-        </div>
-        <button type="submit" class="btn-add-task" id="addBtn" disabled>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-          </svg>
-          Add
-        </button>
+        <input class="task-input" name="title" id="taskInput" placeholder="New task...">
+        <button class="btn-add-task" id="addBtn" disabled>Add</button>
       </div>
-      {% if task_form.title.errors %}
-        <div class="form-error" style="margin-top:0.5rem">
-          {% for e in task_form.title.errors %}{{ e }}{% endfor %}
-        </div>
-      {% endif %}
     </form>
   </div>
 
-  <!-- ── Task list ─────────────────────────────────────── -->
-  {% if tasks.count > 0 %}
-    <div class="task-counts">
-      {% if incomplete_tasks %}
-        <span class="pill pill-primary">{{ incomplete_tasks|length }} to do</span>
-      {% endif %}
-      {% if completed_tasks %}
-        <span class="pill pill-green">{{ completed_tasks|length }} done</span>
-      {% endif %}
+  <!-- Tasks -->
+  <div class="task-list">
+
+    {% for task in incomplete_tasks %}
+    <div class="task-item" id="task-{{ task.id }}" onclick="toggleTask({{ task.id }})">
+      <div class="task-icon"></div>
+      <span>{{ task.title }}</span>
+      <button class="task-delete-btn" onclick="deleteTask(event, {{ task.id }})">🗑</button>
     </div>
-  {% endif %}
+    {% endfor %}
 
-  <div class="task-list" id="taskList">
-
-    {% if not tasks.count %}
-      <div class="surface" style="border-style:dashed;border-radius:var(--r-xl)">
-        <div class="empty">
-          <div class="empty-icon">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--fg-muted)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="9 11 12 14 22 4"/>
-              <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
-            </svg>
-          </div>
-          <div class="empty-title">No tasks yet</div>
-          <p class="empty-desc">Add your first task using the form above.</p>
-        </div>
-      </div>
-    {% else %}
-
-      {% if progress == 100 %}
-        <div class="all-done-banner">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="20 6 9 17 4 12"/>
-          </svg>
-          All tasks complete — great work on {{ subject.name }}!
-        </div>
-      {% endif %}
-
-      {% if incomplete_tasks %}
-  {% for task in incomplete_tasks %}
-
-  <div class="task-item" id="task-{{ task.id }}" onclick="toggleTask({{ task.id }})">
-
-    <div class="task-cb"></div>
-
-    <span class="task-text">{{ task.title }}</span>
-
-    <!-- DELETE BUTTON -->
-    <button
-      type="button"
-      class="task-delete-btn"
-      onclick="deleteTask(event, {{ task.id }})"
-      title="Delete task"
-    >
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-           stroke="currentColor" stroke-width="2"
-           stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="3 6 5 6 21 6"/>
-        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
-        <path d="M10 11v6"/>
-        <path d="M14 11v6"/>
-        <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
-      </svg>
-    </button>
-
-  </div>
-
-  {% endfor %}
-{% endif %}
-
-      {% if incomplete_tasks and completed_tasks %}
-        <div class="divider">Completed</div>
-      {% endif %}
-
-      {% if completed_tasks %}
-  {% for task in completed_tasks %}
-
-  <div class="task-item is-done" id="task-{{ task.id }}" onclick="toggleTask({{ task.id }})">
-
-    <div class="task-cb">
-      <svg width="10" height="10" viewBox="0 0 12 12" fill="none"
-           stroke="white" stroke-width="2.5"
-           stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="2 6 5 9 10 3"/>
-      </svg>
+    {% for task in completed_tasks %}
+    <div class="task-item is-done" id="task-{{ task.id }}" onclick="toggleTask({{ task.id }})">
+      <div class="task-icon"></div>
+      <span>{{ task.title }}</span>
+      <button class="task-delete-btn" onclick="deleteTask(event, {{ task.id }})">🗑</button>
     </div>
-
-    <span class="task-text">{{ task.title }}</span>
-
-    <!-- DELETE BUTTON -->
-    <button
-      type="button"
-      class="task-delete-btn"
-      onclick="deleteTask(event, {{ task.id }})"
-      title="Delete task"
-    >
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-           stroke="currentColor" stroke-width="2"
-           stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="3 6 5 6 21 6"/>
-        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
-        <path d="M10 11v6"/>
-        <path d="M14 11v6"/>
-        <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
-      </svg>
-    </button>
+    {% endfor %}
 
   </div>
-
-  {% endfor %}
-{% endif %}
-
-    {% endif %}
-  </div>
-
-  <!-- Hidden CSRF helper -->
-  <form id="csrf-helper" style="display:none">{% csrf_token %}</form>
 
 </div>
 {% endblock %}
 
 {% block extra_scripts %}
 <script>
-  // ── Add task button ──────────────────────────────────
-  var inp = document.getElementById('taskInput');
-  var btn = document.getElementById('addBtn');
-  if (inp) inp.addEventListener('input', function () {
-    btn.disabled = this.value.trim().length === 0;
+const inp = document.getElementById("taskInput");
+const btn = document.getElementById("addBtn");
+
+if (inp) {
+  inp.addEventListener("input", () => {
+    btn.disabled = inp.value.trim().length === 0;
   });
-
-  // ── Task toggle ──────────────────────────────────────
-  function toggleTask(id) {
-  var csrf = document.querySelector('#csrf-helper [name=csrfmiddlewaretoken]').value;
-
-  var url  = '/subject/{{ subject.id }}/toggle/' + id + '/';
-
-  fetch(url, {
-    method: 'POST',
-    headers: {
-      'X-CSRFToken': csrf,
-      'X-Requested-With': 'XMLHttpRequest',
-      'Content-Type': 'application/json'
-    }
-  })
-  .then(function(r){ return r.json(); })
-  .then(function(d){
-    if (d.success) {
-      applyTaskUI(id, d.done);
-      updateProgress(d.progress, d.done_count, d.total_count);
-    }
-  })
-  .catch(function(){ window.location.reload(); });
 }
 
-  function applyTaskUI(id, done) {
-    var el = document.getElementById('task-' + id);
-    if (!el) return;
-    var cb   = el.querySelector('.task-cb');
-    var text = el.querySelector('.task-text');
+function getCSRF() {
+  return document.querySelector("[name=csrfmiddlewaretoken]").value;
+}
 
-    if (done) {
-      el.classList.add('is-done');
-      if (cb) cb.innerHTML = '<svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 6 5 9 10 3"/></svg>';
-    } else {
-      el.classList.remove('is-done');
-      if (cb) cb.innerHTML = '';
-    }
-  }
+function toggleTask(id) {
+  const el = document.getElementById("task-" + id);
 
-  function updateProgress(pct, done, total) {
-    var bar  = document.getElementById('progressBar');
-    var pctEl = document.getElementById('progressPct');
-    if (bar) {
-      bar.style.width = pct + '%';
-      bar.className   = 'progress-fill' + (pct === 100 ? ' complete' : '');
-    }
-    if (pctEl) {
-      pctEl.textContent = pct + '%';
-      pctEl.className   = 'sh-pct-value' + (pct === 100 ? ' complete' : '');
-    }
-    // Update subtitle
-    var sub = document.querySelector('.sh-subtitle');
-    if (sub && total > 0) sub.textContent = done + ' of ' + total + ' task' + (total !== 1 ? 's' : '') + ' completed';
-  }
-  function deleteTask(event, id) {
-  event.stopPropagation();
+  el.classList.add("anim");
 
-  
-
-  var csrf = document.querySelector('#csrf-helper [name=csrfmiddlewaretoken]').value;
-
-  fetch('/task/delete/' + id + '/', {
-    method: 'POST',
+  fetch(`/subject/{{ subject.id }}/toggle/${id}/`, {
+    method: "POST",
     headers: {
-      'X-CSRFToken': csrf,
-      'X-Requested-With': 'XMLHttpRequest'
+      "X-CSRFToken": getCSRF(),
+      "X-Requested-With": "XMLHttpRequest"
     }
   })
   .then(r => r.json())
-  .then(data => {
-    if (data.success) {
-      document.getElementById('task-' + id).remove();
+  .then(d => {
+    if (d.success) {
+      setTimeout(() => location.reload(), 180);
+    }
+  });
+}
+
+function deleteTask(event, id) {
+  event.stopPropagation();
+
+  fetch(`/task/delete/${id}/`, {
+    method: "POST",
+    headers: {
+      "X-CSRFToken": getCSRF(),
+      "X-Requested-With": "XMLHttpRequest"
     }
   })
-  .catch(() => location.reload());
+  .then(r => r.json())
+  .then(d => {
+    if (d.success) {
+      document.getElementById("task-" + id).remove();
+    }
+  });
 }
 </script>
 {% endblock %}

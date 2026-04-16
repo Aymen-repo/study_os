@@ -149,7 +149,7 @@ def delete_task(request, pk):
     return JsonResponse({'success': False}, status=400)
 
 
-# ================= DELETE SUBJECT (FIXED) ================= #
+# ================= DELETE SUBJECT ================= #
 
 @login_required
 def delete_subject(request, pk):

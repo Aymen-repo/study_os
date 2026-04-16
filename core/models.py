@@ -1,9 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
 class Subject(models.Model):
-    user  = models.ForeignKey(User, on_delete=models.CASCADE, related_name='subjects')
-    name  = models.CharField(max_length=80)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='subjects')
+    name = models.CharField(max_length=80)
+    color = models.CharField(max_length=7, default="#6366f1")
     created_at = models.DateTimeField(auto_now_add=True)
 
     @property
@@ -24,9 +26,9 @@ class Subject(models.Model):
 
 
 class Task(models.Model):
-    subject    = models.ForeignKey(Subject, on_delete=models.CASCADE, related_name='tasks')
-    title      = models.CharField(max_length=200)
-    done       = models.BooleanField(default=False)
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, related_name='tasks')
+    title = models.CharField(max_length=200)
+    done = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
