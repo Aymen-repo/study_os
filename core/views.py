@@ -23,6 +23,10 @@ def register_view(request):
     if request.method == 'POST':
         if form.is_valid():
             user = form.save()
+
+            # ✅ FIX: ensure profile is created immediately
+            Profile.objects.get_or_create(user=user)
+
             login(request, user)
             return redirect('dashboard')
 
@@ -176,7 +180,6 @@ def edit_profile(request):
 
     if request.method == "POST":
 
-        # USER DATA
         username = request.POST.get("username")
         email = request.POST.get("email")
         bio = request.POST.get("bio")
@@ -189,7 +192,6 @@ def edit_profile(request):
 
         user.save()
 
-        # PROFILE DATA
         profile.bio = bio
 
         if "avatar" in request.FILES:
