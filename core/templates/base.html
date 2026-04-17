@@ -614,10 +614,11 @@
 
     <div class="nav-divider"></div>
 
-    <!-- Username -->
-    <span class="nav-link" style="color:var(--fg); font-weight:600;">
-      {{ user.username }}
-    </span>
+    
+    <!-- Profile -->
+<a href="{% url 'profile' %}" class="nav-link {% block nav_profile %}{% endblock %}" style="color:var(--fg); font-weight:600;">
+  {{ user.username }}
+</a>
 
     <!-- Create -->
     <a href="{% url 'create_subject' %}" class="btn-nav-cta">

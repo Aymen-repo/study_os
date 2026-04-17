@@ -1,0 +1,233 @@
+{% extends "base.html" %}
+
+{% block title %}Profile — TaskFlow{% endblock %}
+
+{% block extra_head %}
+<style>
+/* ── Base ─────────────────────────────── */
+.profile-container {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+
+/* ── Profile Card ─────────────────────── */
+.profile-card {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  background: var(--surface);
+  border-radius: 16px;
+  box-shadow: var(--sh-lg);
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+
+.profile-card:hover {
+  transform: translateY(-2px);
+}
+
+@media(max-width: 700px) {
+  .profile-card {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Avatar ──────────────────────────── */
+.profile-avatar-section {
+  background: linear-gradient(135deg, var(--indigo-500), var(--blue-500));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  color: white;
+}
+
+/* avatar box */
+.profile-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid white;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 800;
+}
+
+/* image */
+.profile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* fallback initials */
+.avatar-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 800;
+  color: white;
+}
+
+/* ── Body ───────────────────────────── */
+.profile-body {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.profile-section {
+  background: var(--bg-subtle);
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid var(--border);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.section-header h2 {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+/* inputs */
+input {
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  margin-bottom: 0.5rem;
+}
+
+/* stats */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+}
+
+.stat-tile {
+  background: var(--surface);
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: center;
+  box-shadow: var(--sh-sm);
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: var(--fg-muted);
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="profile-container">
+
+  <div class="profile-card">
+
+    <!-- LEFT SIDE -->
+    <div class="profile-avatar-section">
+
+      <div class="profile-avatar">
+
+        {% if profile.avatar %}
+          <img src="{{ profile.avatar.url }}" alt="avatar">
+        {% else %}
+          <span id="avatarInitials" class="avatar-fallback"></span>
+        {% endif %}
+
+      </div>
+
+      <h2>{{ user.username }}</h2>
+      <p>{{ user.email }}</p>
+
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="profile-body">
+
+      <div class="profile-section">
+        <div class="section-header">
+          <h2>Personal Info</h2>
+        </div>
+
+        <p><strong>Username:</strong> {{ user.username }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+      </div>
+
+      <div class="profile-section">
+        <h2>Stats</h2>
+
+        <div class="stats-grid">
+
+          <div class="stat-tile">
+            <div class="stat-value">{{ subjects_count }}</div>
+            <div class="stat-label">Subjects</div>
+          </div>
+
+          <div class="stat-tile">
+            <div class="stat-value">{{ completed_tasks }}</div>
+            <div class="stat-label">Completed</div>
+          </div>
+
+          <div class="stat-tile">
+            <div class="stat-value">{{ progress }}%</div>
+            <div class="stat-label">Progress</div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  const el = document.getElementById("avatarInitials");
+
+  if (el) {
+    const username = "{{ user.username|escapejs }}";
+
+    let initials = username
+      .split(" ")
+      .filter(Boolean)
+      .map(w => w[0])
+      .join("")
+      .toUpperCase();
+
+    if (!initials) initials = "U";
+
+    el.textContent = initials;
+  }
+
+});
+</script>
+{% endblock %}

@@ -14,13 +14,10 @@ urlpatterns = [
     path('subject/create/', views.create_subject, name='create_subject'),
     path('subject/<int:pk>/', views.subject_detail, name='subject_detail'),
     path('subject/<int:pk>/add-task/', views.add_task, name='add_task'),
-
-    # toggle task
     path('subject/<int:subject_pk>/toggle/<int:task_pk>/', views.toggle_task, name='toggle_task'),
-
-    # delete task
     path('task/delete/<int:pk>/', views.delete_task, name='delete_task'),
-
-    # delete subject (NEW FIX)
     path('subject/<int:pk>/delete/', views.delete_subject, name='delete_subject'),
+
+    # profile
+    path('profile/', views.profile_view, name='profile'),
 ]
