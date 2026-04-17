@@ -2,11 +2,10 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.contrib import messages
 from django.http import JsonResponse
 
 from .models import Subject, Task, Profile
-from .forms import SubjectForm, TaskForm
+from .forms import SubjectForm, TaskForm, UserUpdateForm, ProfileUpdateForm
 
 
 # ================= HOME =================
@@ -53,7 +52,6 @@ def logout_view(request):
 @login_required
 def dashboard(request):
     subjects = Subject.objects.filter(user=request.user)
-
     tasks = Task.objects.filter(subject__user=request.user)
 
     return render(request, 'dashboard.html', {
@@ -64,7 +62,7 @@ def dashboard(request):
     })
 
 
-# ================= SUBJECT =================
+# ================= CREATE SUBJECT =================
 @login_required
 def create_subject(request):
     form = SubjectForm(request.POST or None)
@@ -78,6 +76,7 @@ def create_subject(request):
     return render(request, 'create_subject.html', {'form': form})
 
 
+# ================= SUBJECT DETAIL =================
 @login_required
 def subject_detail(request, pk):
     subject = get_object_or_404(Subject, pk=pk, user=request.user)
@@ -94,6 +93,7 @@ def subject_detail(request, pk):
     })
 
 
+# ================= ADD TASK =================
 @login_required
 def add_task(request, pk):
     subject = get_object_or_404(Subject, pk=pk, user=request.user)
@@ -108,6 +108,7 @@ def add_task(request, pk):
     return redirect('subject_detail', pk=pk)
 
 
+# ================= TOGGLE TASK =================
 @login_required
 def toggle_task(request, subject_pk, task_pk):
     subject = get_object_or_404(Subject, pk=subject_pk, user=request.user)
@@ -116,8 +117,6 @@ def toggle_task(request, subject_pk, task_pk):
     task.done = not task.done
     task.save()
 
-    tasks = subject.tasks.all()
-
     return JsonResponse({
         'success': True,
         'done': task.done,
@@ -125,6 +124,7 @@ def toggle_task(request, subject_pk, task_pk):
     })
 
 
+# ================= DELETE TASK =================
 @login_required
 def delete_task(request, pk):
     task = get_object_or_404(Task, pk=pk, subject__user=request.user)
@@ -132,6 +132,7 @@ def delete_task(request, pk):
     return JsonResponse({'success': True})
 
 
+# ================= DELETE SUBJECT =================
 @login_required
 def delete_subject(request, pk):
     subject = get_object_or_404(Subject, pk=pk, user=request.user)
@@ -147,8 +148,7 @@ def delete_subject(request, pk):
 @login_required
 def profile_view(request):
     user = request.user
-
-    profile, created = Profile.objects.get_or_create(user=user)
+    profile = user.profile
 
     subjects_count = Subject.objects.filter(user=user).count()
     tasks = Task.objects.filter(subject__user=user)
@@ -158,17 +158,6 @@ def profile_view(request):
 
     progress = round((completed_tasks / total_tasks) * 100) if total_tasks else 0
 
-    if request.method == "POST":
-        user.username = request.POST.get("username", user.username)
-        user.email = request.POST.get("email", user.email)
-        user.save()
-
-        if "avatar" in request.FILES:
-            profile.avatar = request.FILES["avatar"]
-            profile.save()
-
-        return redirect('profile')
-
     return render(request, 'profile.html', {
         'user': user,
         'profile': profile,
@@ -176,4 +165,41 @@ def profile_view(request):
         'completed_tasks': completed_tasks,
         'total_tasks': total_tasks,
         'progress': progress,
+    })
+
+
+# ================= EDIT PROFILE =================
+@login_required
+def edit_profile(request):
+    user = request.user
+    profile = user.profile
+
+    if request.method == "POST":
+
+        # USER DATA
+        username = request.POST.get("username")
+        email = request.POST.get("email")
+        bio = request.POST.get("bio")
+
+        if username:
+            user.username = username
+
+        if email:
+            user.email = email
+
+        user.save()
+
+        # PROFILE DATA
+        profile.bio = bio
+
+        if "avatar" in request.FILES:
+            profile.avatar = request.FILES["avatar"]
+
+        profile.save()
+
+        return redirect("profile")
+
+    return render(request, "edite_profile.html", {
+        "user": user,
+        "profile": profile
     })

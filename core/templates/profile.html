@@ -4,6 +4,7 @@
 
 {% block extra_head %}
 <style>
+
 /* ── Base ─────────────────────────────── */
 .profile-container {
   max-width: 900px;
@@ -32,7 +33,7 @@
   }
 }
 
-/* ── Avatar ──────────────────────────── */
+/* ── Avatar Section ───────────────────── */
 .profile-avatar-section {
   background: linear-gradient(135deg, var(--indigo-500), var(--blue-500));
   display: flex;
@@ -54,8 +55,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2rem;
-  font-weight: 800;
 }
 
 /* image */
@@ -75,6 +74,7 @@
   font-size: 2rem;
   font-weight: 800;
   color: white;
+  text-transform: uppercase;
 }
 
 /* ── Body ───────────────────────────── */
@@ -104,15 +104,6 @@
   font-weight: 700;
 }
 
-/* inputs */
-input {
-  width: 100%;
-  padding: 0.5rem;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  margin-bottom: 0.5rem;
-}
-
 /* stats */
 .stats-grid {
   display: grid;
@@ -138,6 +129,23 @@ input {
   font-size: 0.75rem;
   color: var(--fg-muted);
 }
+
+/* edit button */
+.btn {
+  display: inline-block;
+  background: var(--primary);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 600;
+  margin-top: 1rem;
+}
+
+.btn:hover {
+  opacity: 0.9;
+}
+
 </style>
 {% endblock %}
 
@@ -152,16 +160,21 @@ input {
 
       <div class="profile-avatar">
 
-        {% if profile.avatar %}
+        {% if profile.avatar and profile.avatar.name != "avatars/default.png" %}
           <img src="{{ profile.avatar.url }}" alt="avatar">
         {% else %}
-          <span id="avatarInitials" class="avatar-fallback"></span>
+          <div class="avatar-fallback">
+            {{ user.username|default:"U"|slice:":1"|upper }}
+          </div>
         {% endif %}
 
       </div>
 
       <h2>{{ user.username }}</h2>
       <p>{{ user.email }}</p>
+
+      <!-- EDIT BUTTON -->
+      <a href="{% url 'edit_profile' %}" class="btn">Edit Profile</a>
 
     </div>
 
@@ -202,32 +215,9 @@ input {
       </div>
 
     </div>
+
   </div>
+
 </div>
 
-{% endblock %}
-
-{% block extra_js %}
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-
-  const el = document.getElementById("avatarInitials");
-
-  if (el) {
-    const username = "{{ user.username|escapejs }}";
-
-    let initials = username
-      .split(" ")
-      .filter(Boolean)
-      .map(w => w[0])
-      .join("")
-      .toUpperCase();
-
-    if (!initials) initials = "U";
-
-    el.textContent = initials;
-  }
-
-});
-</script>
 {% endblock %}
